@@ -19,3 +19,6 @@ build/
 
 # DS_Store file from macOS
 .DS_Store
+
+# Google Cloud SDK
+google-cloud-sdk/
