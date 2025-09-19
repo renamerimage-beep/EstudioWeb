@@ -1,0 +1,21 @@
+# Firebase admin SDK file
+estudioweb-ebc00-firebase-adminsdk-fbsvc-a817834b66.json
+
+# Node modules
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Build output
+dist/
+build/
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# DS_Store file from macOS
+.DS_Store
