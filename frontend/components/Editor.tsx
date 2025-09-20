@@ -86,77 +86,7 @@ interface EditorProps {
     onStartOver?: () => void;
 }
 
-const ImageComparator: React.FC<{originalSrc: string, currentSrc: string, onImageLoad: (e: React.SyntheticEvent<HTMLImageElement>) => void, imgRef: React.RefObject<HTMLImageElement>}> = ({ originalSrc, currentSrc, onImageLoad, imgRef }) => {
-    const [sliderPosition, setSliderPosition] = useState(50);
-    const containerRef = useRef<HTMLDivElement>(null);
-    const isDragging = useRef(false);
-
-    const handleMove = (clientX: number) => {
-        if (!containerRef.current) return;
-        const rect = containerRef.current.getBoundingClientRect();
-        const x = clientX - rect.left;
-        let percentage = (x / rect.width) * 100;
-        if (percentage < 0) percentage = 0;
-        if (percentage > 100) percentage = 100;
-        setSliderPosition(percentage);
-    };
-
-    const handlePointerDown = (e: React.PointerEvent) => {
-        e.preventDefault();
-        isDragging.current = true;
-        handleMove(e.clientX);
-    };
-
-    const handlePointerMove = (e: React.PointerEvent) => {
-        if (isDragging.current) {
-            e.preventDefault();
-            handleMove(e.clientX);
-        }
-    };
-
-    const handlePointerUp = (e: React.PointerEvent) => {
-        e.preventDefault();
-        isDragging.current = false;
-    };
-
-
-    return (
-        <div 
-            ref={containerRef}
-            className="relative w-full select-none"
-            onPointerMove={handlePointerMove}
-            onPointerUp={handlePointerUp}
-            onPointerLeave={() => isDragging.current = false}
-        >
-            <img
-                src={originalSrc}
-                alt="Original"
-                className="w-full h-auto object-contain max-h-[75vh] pointer-events-none rounded-xl"
-            />
-            <div 
-                className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none"
-                style={{ clipPath: `inset(0 ${100 - sliderPosition}% 0 0)`}}
-            >
-                <img
-                    ref={imgRef}
-                    src={currentSrc}
-                    alt="Atual"
-                    onLoad={onImageLoad}
-                    className="w-full h-full object-contain pointer-events-none rounded-xl"
-                />
-            </div>
-            <div 
-                className="absolute top-0 h-full w-1 bg-white/80 cursor-ew-resize"
-                style={{ left: `${sliderPosition}%`, transform: 'translateX(-50%)' }}
-                onPointerDown={handlePointerDown}
-            >
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white/80 shadow-lg flex items-center justify-center">
-                    <svg className="w-5 h-5 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 9l4-4 4 4m0 6l-4 4-4-4" /></svg>
-                </div>
-            </div>
-        </div>
-    );
-};
+import ImageComparator from './ImageComparator';
 
 
 const Editor: React.FC<EditorProps> = (props) => {

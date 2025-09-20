@@ -20,6 +20,7 @@ import ReferenceSceneUploader from './ReferenceSceneUploader';
 import ReferenceBottomUploader from './ReferenceBottomUploader';
 import PreviewModal from './PreviewModal';
 import AddProductModal, { type AddProductData } from './AddProductModal';
+import ImageComparator from './ImageComparator';
 
 
 const CONCURRENCY_LIMIT = 3;
@@ -150,76 +151,7 @@ const AccordionSection: React.FC<{ title: string; icon: React.ComponentType<{cla
     </details>
 );
 
-const ImageComparator: React.FC<{originalSrc: string, currentSrc: string}> = ({ originalSrc, currentSrc }) => {
-    const [sliderPosition, setSliderPosition] = useState(50);
-    const containerRef = useRef<HTMLDivElement>(null);
-    const isDragging = useRef(false);
 
-    const handleMove = (clientX: number) => {
-        if (!containerRef.current) return;
-        const rect = containerRef.current.getBoundingClientRect();
-        const x = clientX - rect.left;
-        let percentage = (x / rect.width) * 100;
-        percentage = Math.max(0, Math.min(100, percentage));
-        setSliderPosition(percentage);
-    };
-
-    const handlePointerDown = (e: React.PointerEvent) => {
-        e.preventDefault();
-        (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
-        isDragging.current = true;
-        handleMove(e.clientX);
-    };
-    
-    const handlePointerMove = (e: React.PointerEvent) => {
-        if (isDragging.current) {
-            e.preventDefault();
-            handleMove(e.clientX);
-        }
-    };
-    
-    const handlePointerUp = (e: React.PointerEvent) => {
-        if (isDragging.current) {
-            (e.currentTarget as HTMLElement).releasePointerCapture(e.pointerId);
-            isDragging.current = false;
-        }
-    };
-
-    return (
-        <div 
-            ref={containerRef}
-            className="relative w-full h-full select-none rounded-lg overflow-hidden"
-            onPointerMove={handlePointerMove}
-            onPointerUp={handlePointerUp}
-            onPointerLeave={handlePointerUp}
-        >
-            <img
-                src={originalSrc}
-                alt="Original"
-                className="absolute top-0 left-0 w-full h-full object-contain pointer-events-none"
-            />
-            <div 
-                className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none"
-                style={{ clipPath: `inset(0 ${100 - sliderPosition}% 0 0)`}}
-            >
-                <img
-                    src={currentSrc}
-                    alt="Atual"
-                    className="absolute top-0 left-0 w-full h-full object-contain pointer-events-none"
-                />
-            </div>
-            <div 
-                className="absolute top-0 h-full w-1 bg-white/80 cursor-ew-resize z-10"
-                style={{ left: `${sliderPosition}%`, transform: 'translateX(-50%)' }}
-                onPointerDown={handlePointerDown}
-            >
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white/80 shadow-lg flex items-center justify-center">
-                    <svg className="w-5 h-5 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 9l4-4 4 4m0 6l-4 4-4-4" /></svg>
-                </div>
-            </div>
-        </div>
-    );
-};
 
 export const BatchProcessor: React.FC<BatchProcessorProps> = (props) => {
     const {
